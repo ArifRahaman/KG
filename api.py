@@ -269,7 +269,9 @@ async def reset():
 # ---------------------------------------------------------------------------
  
 from chat import text_to_cypher, answer_question, _get_schema, _find_matching_entities
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+import config
  
  
 class ChatRequest(BaseModel):
@@ -336,10 +338,42 @@ async def chat(body: ChatRequest):
 
 
 class SearchRequest(BaseModel):
-    question: str
-    k_child: Optional[int] = None   # children to fetch before collapsing
-    k_parent: Optional[int] = None  # parent chunks to return
-    include_facts: bool = True
+    """Only `question` is required; the rest fall back to config."""
+
+    question: str = Field(
+        ...,
+        min_length=1,
+        description="A natural-language question. Best on why/how/explain.",
+    )
+    k_child: Optional[int] = Field(
+        None,
+        ge=1,
+        le=200,
+        description=(
+            "Children to fetch before collapsing to parents. Adjacent children "
+            "of one parent tend to match together, so this wants to be several "
+            f"times k_parent. Default {config.SEARCH_CHILD_K}."
+        ),
+    )
+    k_parent: Optional[int] = Field(
+        None,
+        ge=1,
+        le=25,
+        description=(
+            "Parent chunks to return after deduplication -- what the model "
+            f"actually reads. Default {config.SEARCH_PARENT_K}."
+        ),
+    )
+    include_facts: bool = Field(
+        True,
+        description="Expand into the graph for structured facts. Off is faster.",
+    )
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [{"question": "why did TechCorp acquire CyberShield?"}]
+        }
+    }
 
 
 @app.post("/search", summary="Ask a question answered from the source text")
