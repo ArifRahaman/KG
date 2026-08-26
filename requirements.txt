@@ -1,0 +1,9 @@
+neo4j>=5.26
+openai>=1.60
+azure-identity>=1.19
+pypdf>=5.0
+python-dotenv>=1.0
+pydantic>=2.0
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
