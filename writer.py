@@ -29,13 +29,26 @@ CONSTRAINTS = [
     "FOR (d:Document) REQUIRE d.id IS UNIQUE",
     "CREATE CONSTRAINT chunk_id IF NOT EXISTS "
     "FOR (c:Chunk) REQUIRE c.id IS UNIQUE",
+    "CREATE CONSTRAINT child_id IF NOT EXISTS "
+    "FOR (k:ChildChunk) REQUIRE k.id IS UNIQUE",
     "CREATE CONSTRAINT entity_id IF NOT EXISTS "
     "FOR (e:__Entity__) REQUIRE e.id IS UNIQUE",
 ]
- 
+
+# The vector index is what makes child search possible at all. Note the
+# dimension is interpolated, not parameterized -- Cypher will not accept a
+# parameter inside index options, so this has to be a literal.
 INDEXES = [
     "CREATE FULLTEXT INDEX entity_name IF NOT EXISTS "
     "FOR (e:__Entity__) ON EACH [e.name]",
+    f"""
+    CREATE VECTOR INDEX child_embedding IF NOT EXISTS
+    FOR (k:ChildChunk) ON (k.embedding)
+    OPTIONS {{ indexConfig: {{
+        `vector.dimensions`: {config.EMBEDDING_DIMENSIONS},
+        `vector.similarity_function`: 'cosine'
+    }} }}
+    """,
 ]
  
 # --- Queries --------------------------------------------------------------
@@ -51,7 +64,18 @@ UNWIND $chunks AS ch
   SET   c.text = ch.text, c.seq = ch.seq, c.content_hash = ch.content_hash
   MERGE (d)-[:HAS_CHUNK]->(c)
 """
- 
+
+# Children are written separately from their parents, not nested into the
+# query above. Each row carries a full 1536-float vector, so these have to
+# be batched on a much smaller size than the chunks themselves.
+WRITE_CHILDREN = """
+UNWIND $rows AS kid
+  MATCH (c:Chunk {id: kid.parent_id})
+  MERGE (k:ChildChunk {id: kid.id})
+  SET   k.text = kid.text, k.seq = kid.seq, k.embedding = kid.embedding
+  MERGE (c)-[:HAS_CHILD]->(k)
+"""
+
 # apoc.merge.* is required because Cypher cannot parameterize a label or a
 # relationship type -- and ours arrive as data from the extractor.
 WRITE_TRIPLES = """
@@ -86,12 +110,17 @@ OPTIONAL MATCH (d:Document)
 WITH count(d) AS documents
 OPTIONAL MATCH (c:Chunk)
 WITH documents, count(c) AS chunks
+OPTIONAL MATCH (k:ChildChunk)
+WITH documents, chunks, count(k) AS children
+OPTIONAL MATCH (k2:ChildChunk) WHERE k2.embedding IS NOT NULL
+WITH documents, chunks, children, count(k2) AS embedded
 OPTIONAL MATCH (e:__Entity__)
-WITH documents, chunks, count(e) AS entities
+WITH documents, chunks, children, embedded, count(e) AS entities
 OPTIONAL MATCH (:__Entity__)-[r]->(:__Entity__)
-WITH documents, chunks, entities, count(r) AS relationships
+WITH documents, chunks, children, embedded, entities, count(r) AS relationships
 OPTIONAL MATCH (o:__Entity__) WHERE NOT (o)--()
-RETURN documents, chunks, entities, relationships, count(o) AS orphans
+RETURN documents, chunks, children, embedded, entities, relationships,
+       count(o) AS orphans
 """
  
 BY_TYPE = """
@@ -186,6 +215,40 @@ def write_document(drv, document: Document) -> None:
     )
  
  
+CHUNKS_WITHOUT_CHILDREN = """
+MATCH (c:Chunk)
+WHERE NOT (c)-[:HAS_CHILD]->(:ChildChunk)
+OPTIONAL MATCH (d:Document)-[:HAS_CHUNK]->(c)
+RETURN c.id AS id, c.text AS text, d.source_uri AS source
+"""
+
+
+def chunks_without_children(drv) -> list[dict]:
+    """
+    Chunks ingested before the child layer existed.
+
+    They are invisible to vector search -- nothing hangs off them to match
+    against. Their text is already stored here though, so children can be
+    rebuilt without the original file, which may well be long gone.
+    """
+    return drv.run(CHUNKS_WITHOUT_CHILDREN)
+
+
+def write_children(drv, rows: list[dict]) -> None:
+    """
+    Write embedded children and link each to its parent Chunk.
+
+    Rows are {parent_id, id, text, seq, embedding}. Batched small: 50 rows
+    of 1536 floats is already well over a megabyte of JSON on the wire.
+    """
+    if not rows:
+        return
+
+    size = config.CHILD_WRITE_BATCH_SIZE
+    for start in range(0, len(rows), size):
+        drv.run(WRITE_CHILDREN, {"rows": rows[start : start + size]})
+
+
 def write_triples(drv, triples: list[Triple]) -> None:
     if not triples:
         return
@@ -219,7 +282,8 @@ def wipe(drv) -> int:
     total = 0
     while True:
         rows = drv.run(
-            "MATCH (n) WHERE n:Document OR n:Chunk OR n:__Entity__ "
+            "MATCH (n) WHERE n:Document OR n:Chunk OR n:ChildChunk "
+            "OR n:__Entity__ "
             "WITH n LIMIT 10000 DETACH DELETE n RETURN count(*) AS deleted"
         )
         deleted = rows[0]["deleted"]

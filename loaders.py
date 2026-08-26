@@ -25,13 +25,29 @@ SUPPORTED = {".pdf", ".txt", ".md", ".csv", ".tsv", ".json", ".jsonl"}
  
  
 @dataclass
+class Child:
+    """
+    A retrieval unit. Small on purpose.
+
+    Children are the only things that get embedded. They exist to be found,
+    never to be read -- once a search lands on one, the pipeline hops to its
+    parent Chunk and hands *that* to the LLM.
+    """
+
+    id: str
+    text: str
+    seq: int
+
+
+@dataclass
 class Chunk:
     id: str
     text: str
     seq: int
     content_hash: str
- 
- 
+    children: list[Child] = field(default_factory=list)
+
+
 @dataclass
 class Document:
     id: str
@@ -57,16 +73,90 @@ def _make_chunks(doc_id: str, texts: list[str], min_chars: int) -> list[Chunk]:
         if len(text) < min_chars:
             continue
         content_hash = _sha(text)
+        chunk_id = f"{doc_id}:{seq}"
         chunks.append(
             Chunk(
-                id=f"{doc_id}:{seq}",
+                id=chunk_id,
                 text=text,
                 seq=seq,
                 content_hash=content_hash,
+                children=_make_children(chunk_id, text),
             )
         )
         seq += 1
     return chunks
+
+
+# --------------------------------------------------------------------------
+# Child splitting -- the retrieval layer
+# --------------------------------------------------------------------------
+
+
+def _split_units(text: str) -> list[str]:
+    """
+    Break a chunk into its smallest natural pieces.
+
+    Records first: CSV and JSON chunks are already several complete records
+    joined by RECORD_SEPARATOR, and one record is a far better retrieval unit
+    than a sentence cut out of the middle of one.
+
+    Otherwise sentences, because a child that ends mid-clause embeds badly.
+    """
+    if RECORD_SEPARATOR in text:
+        return [u.strip() for u in text.split(RECORD_SEPARATOR) if u.strip()]
+    return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+
+
+def _hard_split(text: str, budget: int) -> list[str]:
+    """
+    Last resort for a single unit longer than the budget.
+
+    Splits on whitespace, never mid-word -- a vector for '...ed Acme in 20'
+    is worse than no vector at all.
+    """
+    out: list[str] = []
+    buffer = ""
+    for word in text.split():
+        if not buffer:
+            buffer = word
+        elif len(buffer) + 1 + len(word) <= budget:
+            buffer = f"{buffer} {word}"
+        else:
+            out.append(buffer)
+            buffer = word
+    if buffer:
+        out.append(buffer)
+    return out
+
+
+def _make_children(chunk_id: str, text: str) -> list[Child]:
+    """Pack a chunk's units into children of at most CHILD_CHUNK_CHARS."""
+    budget = config.CHILD_CHUNK_CHARS
+    packed: list[str] = []
+    buffer = ""
+
+    for unit in _split_units(text):
+        if len(unit) > budget:
+            if buffer:
+                packed.append(buffer)
+                buffer = ""
+            packed.extend(_hard_split(unit, budget))
+            continue
+
+        if not buffer:
+            buffer = unit
+        elif len(buffer) + 1 + len(unit) <= budget:
+            buffer = f"{buffer} {unit}"
+        else:
+            packed.append(buffer)
+            buffer = unit
+
+    if buffer:
+        packed.append(buffer)
+
+    return [
+        Child(id=f"{chunk_id}#{i}", text=t, seq=i) for i, t in enumerate(packed)
+    ]
  
  
 def _pack_paragraphs(text: str) -> list[str]:
