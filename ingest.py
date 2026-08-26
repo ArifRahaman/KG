@@ -86,29 +86,20 @@ def cmd_backfill() -> None:
 
         print(f"  {len(pending)} chunk(s) without children")
 
-        rows = []
-        for chunk in pending:
-            source = Path(chunk["source"] or "unknown").name
-            children = loaders._make_children(chunk["id"], chunk["text"])
-            for child in children:
-                rows.append(
-                    {
-                        "parent_id": chunk["id"],
-                        "id": child.id,
-                        "text": child.text,
-                        "seq": child.seq,
-                        "embedding": None,  # filled in below
-                        "_context": embed.contextualize(
-                            child.text, chunk["text"], source
-                        ),
-                    }
-                )
+        parents = [
+            {
+                "id": chunk["id"],
+                "text": chunk["text"],
+                "source": Path(chunk["source"] or "unknown").name,
+                "children": loaders._make_children(chunk["id"], chunk["text"]),
+            }
+            for chunk in pending
+        ]
 
-        print(f"  embedding {len(rows)} children...", end="\r", flush=True)
-        vectors = embed.embed_texts([r.pop("_context") for r in rows])
-        for row, vector in zip(rows, vectors):
-            row["embedding"] = vector
+        total = sum(len(p["children"]) for p in parents)
+        print(f"  embedding {total} children...", end="\r", flush=True)
 
+        rows = embed.build_child_rows(parents)
         writer.write_children(drv, rows)
         print(" " * 60, end="\r")
         print(f"  {len(rows)} children embedded and written")
@@ -133,30 +124,18 @@ def _embed_children(document, drv) -> int:
     and relative dates inside it still resolve to something. See
     embed.contextualize.
     """
-    pairs = [(chunk, child) for chunk in document.chunks for child in chunk.children]
-    if not pairs:
-        return 0
-
     source = Path(document.source_uri).name
-    inputs = [
-        embed.contextualize(child.text, chunk.text, source) for chunk, child in pairs
+    parents = [
+        {"id": c.id, "text": c.text, "source": source, "children": c.children}
+        for c in document.chunks
     ]
 
-    print(f"  embedding {len(inputs)} children...", end="\r", flush=True)
-    vectors = embed.embed_texts(inputs)
+    total = sum(len(p["children"]) for p in parents)
+    print(f"  embedding {total} children...", end="\r", flush=True)
 
-    rows = [
-        {
-            "parent_id": chunk.id,
-            "id": child.id,
-            "text": child.text,
-            "seq": child.seq,
-            "embedding": vector,
-        }
-        for (chunk, child), vector in zip(pairs, vectors)
-    ]
-
+    rows = embed.build_child_rows(parents)
     writer.write_children(drv, rows)
+
     print(" " * 60, end="\r")
     return len(rows)
 

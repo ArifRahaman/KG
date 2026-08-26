@@ -7,8 +7,11 @@ Endpoints:
     POST   /ingest           upload a file → background extraction → job_id
     GET    /status/{job_id}  poll job progress
     POST   /setup            create Neo4j constraints & indexes
+    POST   /backfill         add the child layer to pre-existing chunks
     GET    /stats            graph summary
     GET    /graph            browse nodes + relationships
+    POST   /chat             question → Cypher → answer  (structure)
+    POST   /search           question → vector + graph → answer  (text)
     DELETE /reset            wipe all data
 """
  
@@ -25,7 +28,9 @@ from typing import Optional
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
  
+import embed
 import loaders
+import search
 import writer
 from extract import ExtractionStats, extract_chunk
  
@@ -58,7 +63,8 @@ def _run_ingestion(job_id: str, file_path: str, original_name: str) -> None:
         # 1. Load & chunk
         document = loaders.load(file_path)
         jobs[job_id]["chunks"] = len(document.chunks)
- 
+        jobs[job_id]["children"] = sum(len(c.children) for c in document.chunks)
+
         # 2. Write document + chunks
         with writer.driver() as drv:
             if not writer.check_apoc(drv):
@@ -66,9 +72,26 @@ def _run_ingestion(job_id: str, file_path: str, original_name: str) -> None:
                     "APOC is not installed. Run POST /setup first, "
                     "or install APOC on your Neo4j instance."
                 )
- 
+
             writer.write_document(drv, document)
- 
+
+            # 2b. Embed children. Without this the upload is invisible to
+            # POST /search -- vector search has nothing to match against,
+            # because only children carry embeddings.
+            rows = embed.build_child_rows(
+                [
+                    {
+                        "id": c.id,
+                        "text": c.text,
+                        "source": original_name or Path(file_path).name,
+                        "children": c.children,
+                    }
+                    for c in document.chunks
+                ]
+            )
+            writer.write_children(drv, rows)
+            jobs[job_id]["children_embedded"] = len(rows)
+
             # 3. Extract triples
             stats = ExtractionStats()
             all_triples = []
@@ -294,4 +317,121 @@ async def chat(body: ChatRequest):
         answer = answer_question(question, results)
  
     return {"question": question, "cypher": cypher, "results": results[:50], "answer": answer}
+
+
+# ---------------------------------------------------------------------------
+# Search: vector retrieval over chunk text, enriched with graph facts
+# ---------------------------------------------------------------------------
+#
+# /chat and /search answer different questions and neither replaces the other.
+#
+#   /chat    turns the question into Cypher. Precise on structure -- "who is
+#            the CEO", "what did X acquire" -- and blind to anything the
+#            graph has no edge for.
+#   /search  matches the question against the source text. Finds reasons,
+#            caveats and qualifiers that extraction discarded, because a
+#            triple keeps that X acquired Y but never why.
+#
+# Prefer /chat for "who/what/which", /search for "why/how/explain".
+
+
+class SearchRequest(BaseModel):
+    question: str
+    k_child: Optional[int] = None   # children to fetch before collapsing
+    k_parent: Optional[int] = None  # parent chunks to return
+    include_facts: bool = True
+
+
+@app.post("/search", summary="Ask a question answered from the source text")
+async def search_endpoint(body: SearchRequest):
+    """
+    Send `{"question": "..."}` and get back an answer grounded in the
+    retrieved passages, plus the passages themselves so the caller can
+    show its own citations.
+
+    Retrieval runs against ChildChunk vectors and then hops to the parent
+    Chunk, so matching stays precise while the model still reads whole
+    passages.
+    """
+    question = body.question.strip()
+    if not question:
+        raise HTTPException(400, "Missing 'question' field")
+
+    with writer.driver() as drv:
+        try:
+            passages = search.retrieve(
+                drv, question, k_child=body.k_child or 0, k_parent=body.k_parent or 0
+            )
+        except Exception as exc:
+            # Overwhelmingly the missing vector index rather than a bad query.
+            raise HTTPException(
+                503,
+                f"Vector search failed ({exc}). Has POST /setup been run, "
+                "and is anything ingested with embeddings?",
+            )
+
+        if not passages:
+            return {
+                "question": question,
+                "answer": None,
+                "passages": [],
+                "facts": [],
+                "message": "Nothing retrieved. Check GET /stats for embedded children.",
+            }
+
+        facts = (
+            search.expand(drv, [p["chunk_id"] for p in passages])
+            if body.include_facts
+            else []
+        )
+        answer = search.answer(question, passages, facts)
+
+    return {
+        "question": question,
+        "answer": answer,
+        "passages": [
+            {
+                "chunk_id": p["chunk_id"],
+                "source": p["source"],
+                "text": p["text"],
+                "score": p["score"],
+                "matched_children": p["matched_children"],
+            }
+            for p in passages
+        ],
+        "facts": facts,
+    }
+
+
+@app.post("/backfill", summary="Add the child layer to pre-existing chunks")
+async def backfill():
+    """
+    Embed children for chunks ingested before the vector layer existed.
+
+    Rebuilds them from the chunk text already stored in Neo4j, so the
+    original source file does not need to still be around.
+    """
+    with writer.driver() as drv:
+        pending = writer.chunks_without_children(drv)
+        if not pending:
+            return {"message": "Every chunk already has children.", "children": 0}
+
+        rows = embed.build_child_rows(
+            [
+                {
+                    "id": chunk["id"],
+                    "text": chunk["text"],
+                    "source": Path(chunk["source"] or "unknown").name,
+                    "children": loaders._make_children(chunk["id"], chunk["text"]),
+                }
+                for chunk in pending
+            ]
+        )
+        writer.write_children(drv, rows)
+
+    return {
+        "message": f"Backfilled {len(pending)} chunk(s).",
+        "chunks": len(pending),
+        "children": len(rows),
+    }
  

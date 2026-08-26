@@ -130,3 +130,41 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
 def embed_query(question: str) -> list[float]:
     """Embed a single search query. No context prefix -- there is no parent."""
     return embed_texts([question])[0]
+
+
+def build_child_rows(parents: list[dict]) -> list[dict]:
+    """
+    Contextualise and embed every child, shaped for writer.write_children.
+
+    Takes [{id, text, source, children: [Child, ...]}, ...] so that it works
+    for both freshly loaded documents and chunks read back out of Neo4j
+    during a backfill -- the two arrive in different shapes but need exactly
+    the same treatment.
+
+    One batched pass over all children, rather than per parent: the API
+    round trip dominates, so batching across the whole document matters far
+    more than any per-parent structure.
+    """
+    pairs = [
+        (parent, child) for parent in parents for child in parent["children"]
+    ]
+    if not pairs:
+        return []
+
+    vectors = embed_texts(
+        [
+            contextualize(child.text, parent["text"], parent["source"])
+            for parent, child in pairs
+        ]
+    )
+
+    return [
+        {
+            "parent_id": parent["id"],
+            "id": child.id,
+            "text": child.text,
+            "seq": child.seq,
+            "embedding": vector,
+        }
+        for (parent, child), vector in zip(pairs, vectors)
+    ]
