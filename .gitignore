@@ -1,5 +1,15 @@
+# Secrets -- .env.example is the committed template
 .env
+
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Nested working copies, not part of this codebase
+kg/
+KG-2/
+
+# Local agent/tool state
+.refact/
