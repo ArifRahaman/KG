@@ -41,6 +41,12 @@ CONSTRAINTS = [
 INDEXES = [
     "CREATE FULLTEXT INDEX entity_name IF NOT EXISTS "
     "FOR (e:__Entity__) ON EACH [e.name]",
+    # Lexical twin of the vector index. Embeddings are blind to rare exact
+    # tokens: an identifier like "T-3" carries almost no semantic weight, so
+    # cosine similarity ranks it near noise, while BM25 treats its rarity as
+    # the strongest signal there is. The two fail on opposite inputs.
+    "CREATE FULLTEXT INDEX child_text IF NOT EXISTS "
+    "FOR (k:ChildChunk) ON EACH [k.text]",
     f"""
     CREATE VECTOR INDEX child_embedding IF NOT EXISTS
     FOR (k:ChildChunk) ON (k.embedding)

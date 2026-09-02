@@ -217,30 +217,152 @@ def _split_long(text: str) -> list[str]:
 # --------------------------------------------------------------------------
  
  
+# --------------------------------------------------------------------------
+# PDF text repair -- runs before any chunking
+# --------------------------------------------------------------------------
+
+# pypdf hands back glyphs as typeset, not as written. Justified academic text
+# is hyphenated at the right margin, so "infrastructure flexibility" arrives
+# as "infrastruc-\nture flexibility" and matches no query asking for it.
+# Ligatures and typographic dashes arrive as codepoints no query contains
+# either.
+_LIGATURES = {
+    "\ufb00": "ff", "\ufb01": "fi", "\ufb02": "fl",
+    "\ufb03": "ffi", "\ufb04": "ffl",
+    "\u2010": "-", "\u2011": "-", "\u00ad": "-",
+    "\u00a0": " ", "\ufffd": "",
+}
+
+# A hyphen with letters on both sides *on one line* is a real compound
+# ("multi-actor"). Neither alternative can match across a newline, so every
+# hit here is same-line by construction.
+_INLINE_COMPOUND = re.compile(r"\b([A-Za-z]{2,})-([A-Za-z]{2,})\b")
+_HYPHEN_BREAK = re.compile(r"\b([A-Za-z]{2,})-\n([a-z]{2,})\b")
+
+# Fallback for compounds the corpus only ever shows broken, so it never
+# witnesses them intact.
+_PREFIXES = {
+    "non", "multi", "self", "pre", "post", "co", "re", "sub", "cross",
+    "inter", "intra", "semi", "anti", "meta", "socio", "techno",
+}
+
+
+def _dehyphenate(text: str) -> str:
+    """
+    Rejoin words split across a line break, keeping genuine compounds.
+
+    The document is its own dictionary: a pair seen hyphenated on a single
+    line somewhere keeps its hyphen everywhere. That beats a fixed wordlist,
+    which would have to know every domain term in advance.
+    """
+    compounds = {
+        (a.lower(), b.lower()) for a, b in _INLINE_COMPOUND.findall(text)
+    }
+
+    def join(match: re.Match) -> str:
+        head, tail = match.group(1), match.group(2)
+        keep = (
+            (head.lower(), tail.lower()) in compounds
+            or head.lower() in _PREFIXES
+        )
+        return f"{head}-{tail}" if keep else f"{head}{tail}"
+
+    return _HYPHEN_BREAK.sub(join, text)
+
+
+def _repair_pdf_text(text: str) -> str:
+    for bad, good in _LIGATURES.items():
+        text = text.replace(bad, good)
+    return _dehyphenate(text)
+
+
+# --------------------------------------------------------------------------
+# Section detection -- the structural unit for PDFs
+# --------------------------------------------------------------------------
+
+# "4.3 From Cloud Experimentation to Sovereign and Secure Operational
+#  Infrastructure (T-3)" -- numbered, title-cased, and often wrapped across
+# two lines by the typesetter.
+_HEADING = re.compile(r"^(\d+(?:\.\d+)*)\s+([A-Z].{2,90})$")
+
+
+def _looks_like_heading(line: str) -> bool:
+    # A comma means prose or an address block ("1 University of Hamburg,
+    # Hamburg, Germany") rather than a section title.
+    return (
+        bool(_HEADING.match(line))
+        and not line.endswith(".")
+        and "," not in line
+    )
+
+
+def _split_sections(text: str) -> list[tuple[str, str]]:
+    """
+    Cut the document at its section headings, returning (heading, body).
+
+    Without this, chunk boundaries fall wherever the character budget runs
+    out, and an identifier that lives in a heading ends up in a different
+    chunk from the paragraphs explaining it.
+    """
+    lines = text.split("\n")
+    sections: list[tuple[str, list[str]]] = [("", [])]
+    skip_next = False
+
+    for i, raw in enumerate(lines):
+        if skip_next:
+            skip_next = False
+            continue
+
+        line = raw.strip()
+        if _looks_like_heading(line):
+            heading = line
+            # Absorb a wrapped continuation: short, unpunctuated, capitalised.
+            nxt = lines[i + 1].strip() if i + 1 < len(lines) else ""
+            if nxt and len(nxt) < 60 and not nxt.endswith(".") and nxt[:1].isupper():
+                heading = f"{heading} {nxt}"
+                skip_next = True
+            sections.append((heading, []))
+            continue
+
+        sections[-1][1].append(line)
+
+    return [(h, " ".join(b).strip()) for h, b in sections if " ".join(b).strip()]
+
+
 def _read_pdf(path: Path) -> list[str]:
     try:
         from pypdf import PdfReader
     except ImportError:
         raise SystemExit("PDF support needs pypdf:  pip install pypdf")
- 
+
     reader = PdfReader(str(path))
     pages: list[str] = []
     for page in reader.pages:
         text = page.extract_text() or ""
         if text.strip():
             pages.append(text)
- 
+
     if not pages:
         raise SystemExit(
             f"No text found in {path.name}.\n"
             "If this is a scanned PDF it needs OCR first -- pypdf only reads "
             "embedded text, not images of text."
         )
- 
-    # Pack across the whole document so chunks don't stop dead at page breaks.
-    return _pack_paragraphs("\n\n".join(pages))
- 
- 
+
+    repaired = _repair_pdf_text("\n".join(pages))
+
+    # Every chunk opens with its heading. That costs one line and buys three
+    # things: the heading is embedded into each child through the context
+    # prefix, it survives into what the LLM reads, and an identifier that
+    # appears only in a heading still anchors the body beneath it.
+    texts: list[str] = []
+    for heading, body in _split_sections(repaired):
+        label = f"[{heading}]\n\n" if heading else ""
+        for piece in _split_long(body):
+            texts.append(f"{label}{piece}")
+    return texts
+
+
 def _read_text(path: Path) -> list[str]:
     return _pack_paragraphs(path.read_text(encoding="utf-8", errors="replace"))
  

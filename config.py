@@ -79,4 +79,14 @@ CHILD_WRITE_BATCH_SIZE = int(os.getenv("KG_CHILD_WRITE_BATCH_SIZE", "50"))
 # so ask for far more children than the number of parents actually wanted.
 SEARCH_CHILD_K = int(os.getenv("KG_SEARCH_CHILD_K", "30"))
 SEARCH_PARENT_K = int(os.getenv("KG_SEARCH_PARENT_K", "5"))
+
+# A multi-part question is split into standalone sub-queries, each searched
+# separately. The cap bounds both the LLM planning call and the fan-out.
+SEARCH_MAX_SUBQUERIES = int(os.getenv("KG_SEARCH_MAX_SUBQUERIES", "4"))
+
+# Ceiling on the fused result set. The per-query budget is SEARCH_PARENT_K,
+# so four sub-queries can surface up to twenty parents; this keeps the
+# prompt from growing without bound while still letting a three-part
+# question return passages for all three parts.
+SEARCH_MAX_PARENTS = int(os.getenv("KG_SEARCH_MAX_PARENTS", "12"))
  

@@ -1,0 +1,825 @@
+{
+  "nodes": [
+    {
+      "id": "7ab49a98500e58c0",
+      "name": "TechCorp Inc.",
+      "type": "Organization"
+    },
+    {
+      "id": "b437de62da1f6498",
+      "name": "Sarah Chen",
+      "type": "Person"
+    },
+    {
+      "id": "d02a47361bdbddb0",
+      "name": "Michael Rodriguez",
+      "type": "Person"
+    },
+    {
+      "id": "b4db2f7db9a8065a",
+      "name": "2015",
+      "type": "Event"
+    },
+    {
+      "id": "97327164983e1c95",
+      "name": "San Francisco, California",
+      "type": "Location"
+    },
+    {
+      "id": "dd50255db1c8e15e",
+      "name": "artificial intelligence",
+      "type": "Concept"
+    },
+    {
+      "id": "ee890fefa3ad4f3d",
+      "name": "cloud computing solutions",
+      "type": "Concept"
+    },
+    {
+      "id": "357405273b37e16d",
+      "name": "DataFlow Systems",
+      "type": "Organization"
+    },
+    {
+      "id": "46c5ed09b14a9a6a",
+      "name": "Austin, Texas",
+      "type": "Location"
+    },
+    {
+      "id": "45f93adf424e88cc",
+      "name": "James Park",
+      "type": "Person"
+    },
+    {
+      "id": "f84946181b7127eb",
+      "name": "2019",
+      "type": "Event"
+    },
+    {
+      "id": "2111d458f6e73769",
+      "name": "real-time data pipeline technology",
+      "type": "Concept"
+    },
+    {
+      "id": "2825f4b41bc6284e",
+      "name": "CEO of TechCorp",
+      "type": "Position"
+    },
+    {
+      "id": "34e5754a7862d236",
+      "name": "Chief Technology Officer of TechCorp",
+      "type": "Position"
+    },
+    {
+      "id": "3e34963f2f5a7be8",
+      "name": "Vice President of Data Engineering",
+      "type": "Position"
+    },
+    {
+      "id": "beeb4f20530606ff",
+      "name": "$2.8 billion",
+      "type": "Financial"
+    },
+    {
+      "id": "6009cb189b0ed9fc",
+      "name": "12,000 people",
+      "type": "Quantity"
+    },
+    {
+      "id": "0ee64fd85f542f7a",
+      "name": "15 offices worldwide",
+      "type": "Quantity"
+    },
+    {
+      "id": "8152f5980945a5f4",
+      "name": "CloudMind AI",
+      "type": "Product"
+    },
+    {
+      "id": "2df5e24db9797423",
+      "name": "over 500 Fortune 1000 companies",
+      "type": "Quantity"
+    },
+    {
+      "id": "d8583af634769efe",
+      "name": "TechLM-7B",
+      "type": "Product"
+    },
+    {
+      "id": "9a950294820b2d49",
+      "name": "enterprise data with customer permission",
+      "type": "Concept"
+    },
+    {
+      "id": "9301130a25c17e5a",
+      "name": "Amazon Web Services (AWS)",
+      "type": "Organization"
+    },
+    {
+      "id": "3c57a51ade684753",
+      "name": "Microsoft Azure",
+      "type": "Organization"
+    },
+    {
+      "id": "39601684b4e94107",
+      "name": "Google Cloud Platform",
+      "type": "Organization"
+    },
+    {
+      "id": "2938d4c5f7edfb57",
+      "name": "NVIDIA",
+      "type": "Organization"
+    },
+    {
+      "id": "127339810d275140",
+      "name": "H100 GPUs",
+      "type": "Product"
+    },
+    {
+      "id": "3c58c3ef91c7e290",
+      "name": "Palantir Technologies",
+      "type": "Organization"
+    },
+    {
+      "id": "b0353be1047fe80d",
+      "name": "Snowflake",
+      "type": "Organization"
+    },
+    {
+      "id": "47422746cfe05b01",
+      "name": "Databricks",
+      "type": "Organization"
+    },
+    {
+      "id": "7ad31ab1bfbc7051",
+      "name": "vertical integration of AI models with data pipeline technology",
+      "type": "Concept"
+    },
+    {
+      "id": "086a1a20ab3463b3",
+      "name": "DataFlow",
+      "type": "Organization"
+    },
+    {
+      "id": "b59032ecd0638524",
+      "name": "Python",
+      "type": "Technology"
+    },
+    {
+      "id": "e86dc4288af159b5",
+      "name": "Rust",
+      "type": "Technology"
+    },
+    {
+      "id": "06eeee51ce0bac90",
+      "name": "React",
+      "type": "Technology"
+    },
+    {
+      "id": "8fa7be65089921cf",
+      "name": "PostgreSQL",
+      "type": "Technology"
+    },
+    {
+      "id": "4160b03e1680b6d6",
+      "name": "Apache Kafka",
+      "type": "Technology"
+    },
+    {
+      "id": "555b86fe58d50c4f",
+      "name": "Kubernetes",
+      "type": "Technology"
+    },
+    {
+      "id": "204ecdba9b6a73ce",
+      "name": "Lisa Wang",
+      "type": "Person"
+    },
+    {
+      "id": "6a1c886f3aa8c986",
+      "name": "Robert Kim",
+      "type": "Person"
+    },
+    {
+      "id": "b2c3684ba8c6ac3a",
+      "name": "Dr. Amy Foster",
+      "type": "Person"
+    },
+    {
+      "id": "ae88c2dfcac33969",
+      "name": "European expansion in 2025",
+      "type": "Event"
+    },
+    {
+      "id": "80503c8e74337369",
+      "name": "London",
+      "type": "Location"
+    },
+    {
+      "id": "93c49ef8a591dd0f",
+      "name": "Maria Garcia",
+      "type": "Person"
+    },
+    {
+      "id": "4369fa6ed9874c56",
+      "name": "VP European Operations",
+      "type": "Position"
+    },
+    {
+      "id": "77d454a2ecad7d82",
+      "name": "Regional Director at Salesforce",
+      "type": "Position"
+    },
+    {
+      "id": "3d25ad499c076c0a",
+      "name": "TechLM-70B",
+      "type": "Product"
+    },
+    {
+      "id": "2d90c8d6c9a31d80",
+      "name": "Q3 2025",
+      "type": "Event"
+    },
+    {
+      "id": "8490bd1b2166f221",
+      "name": "10,000 NVIDIA H100 GPUs",
+      "type": "Product"
+    },
+    {
+      "id": "e2150ff3a8991d3a",
+      "name": "AWS",
+      "type": "Organization"
+    },
+    {
+      "id": "8e4e3960cb5a64a0",
+      "name": "Sequoia Capital",
+      "type": "Organization"
+    },
+    {
+      "id": "bed7f621c8277585",
+      "name": "Andreessen Horowitz",
+      "type": "Organization"
+    },
+    {
+      "id": "efdb3a1ebee45c9b",
+      "name": "SoftBank Vision Fund",
+      "type": "Organization"
+    },
+    {
+      "id": "e3f7e74471c50531",
+      "name": "$500M",
+      "type": "Concept"
+    },
+    {
+      "id": "c930ac991c38215e",
+      "name": "NASDAQ",
+      "type": "Organization"
+    },
+    {
+      "id": "0fb08a6ae155f2f0",
+      "name": "Sep 2023",
+      "type": "Event"
+    },
+    {
+      "id": "c9f146cc2785a98b",
+      "name": "TCAI",
+      "type": "Concept"
+    },
+    {
+      "id": "4d46469752fdd2b4",
+      "name": "OpenAI",
+      "type": "Organization"
+    },
+    {
+      "id": "693e078df0c61fff",
+      "name": "Anthropic",
+      "type": "Organization"
+    },
+    {
+      "id": "7a58220d11feda88",
+      "name": "EU AI Act regulatory changes",
+      "type": "Concept"
+    },
+    {
+      "id": "206d2f13ca989deb",
+      "name": "NVIDIA hardware dependency",
+      "type": "Concept"
+    },
+    {
+      "id": "4dae628a0d5bcb6f",
+      "name": "To democratize enterprise AI and make intelligent data processing accessible to every organization",
+      "type": "Concept"
+    }
+  ],
+  "edges": [
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FOUNDED_BY",
+      "object_id": "b437de62da1f6498",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FOUNDED_BY",
+      "object_id": "d02a47361bdbddb0",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FOUNDED_IN",
+      "object_id": "b4db2f7db9a8065a",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "LOCATED_IN",
+      "object_id": "97327164983e1c95",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "SPECIALIZES_IN",
+      "object_id": "dd50255db1c8e15e",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "SPECIALIZES_IN",
+      "object_id": "ee890fefa3ad4f3d",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "ACQUIRED",
+      "object_id": "357405273b37e16d",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "357405273b37e16d",
+      "predicate": "LOCATED_IN",
+      "object_id": "46c5ed09b14a9a6a",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "357405273b37e16d",
+      "predicate": "FOUNDED_BY",
+      "object_id": "45f93adf424e88cc",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "357405273b37e16d",
+      "predicate": "FOUNDED_IN",
+      "object_id": "f84946181b7127eb",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "357405273b37e16d",
+      "predicate": "SPECIALIZES_IN",
+      "object_id": "2111d458f6e73769",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "b437de62da1f6498",
+      "predicate": "SERVES_AS",
+      "object_id": "2825f4b41bc6284e",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "d02a47361bdbddb0",
+      "predicate": "SERVES_AS",
+      "object_id": "34e5754a7862d236",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "45f93adf424e88cc",
+      "predicate": "JOINED",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "45f93adf424e88cc",
+      "predicate": "SERVES_AS",
+      "object_id": "3e34963f2f5a7be8",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "REPORTED_REVENUE",
+      "object_id": "beeb4f20530606ff",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "EMPLOYS",
+      "object_id": "6009cb189b0ed9fc",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_OFFICES",
+      "object_id": "0ee64fd85f542f7a",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "8152f5980945a5f4",
+      "predicate": "USED_BY",
+      "object_id": "2df5e24db9797423",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "8152f5980945a5f4",
+      "predicate": "USES",
+      "object_id": "d8583af634769efe",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "d8583af634769efe",
+      "predicate": "TRAINED_ON",
+      "object_id": "9a950294820b2d49",
+      "chunk_ids": [
+        "5e2d7c1a4454:0"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_PARTNERSHIP_WITH",
+      "object_id": "9301130a25c17e5a",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_PARTNERSHIP_WITH",
+      "object_id": "3c57a51ade684753",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_PARTNERSHIP_WITH",
+      "object_id": "39601684b4e94107",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "PARTNERED_WITH",
+      "object_id": "2938d4c5f7edfb57",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_PRODUCT",
+      "object_id": "127339810d275140",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_COMPETITOR",
+      "object_id": "3c58c3ef91c7e290",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_COMPETITOR",
+      "object_id": "b0353be1047fe80d",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "HAS_COMPETITOR",
+      "object_id": "47422746cfe05b01",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "DIFFERENTIATES_THROUGH",
+      "object_id": "7ad31ab1bfbc7051",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "ACQUIRED",
+      "object_id": "086a1a20ab3463b3",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "d02a47361bdbddb0",
+      "predicate": "LEADS_TEAM_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "b59032ecd0638524",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "e86dc4288af159b5",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "06eeee51ce0bac90",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "8fa7be65089921cf",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "4160b03e1680b6d6",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "USES_TECHNOLOGY",
+      "object_id": "555b86fe58d50c4f",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "b437de62da1f6498",
+      "predicate": "CHAIR_OF_BOARD_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "d02a47361bdbddb0",
+      "predicate": "BOARD_MEMBER_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "204ecdba9b6a73ce",
+      "predicate": "BOARD_MEMBER_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "6a1c886f3aa8c986",
+      "predicate": "BOARD_MEMBER_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "b2c3684ba8c6ac3a",
+      "predicate": "BOARD_MEMBER_AT",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:1"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "PLANS_EXPANSION",
+      "object_id": "ae88c2dfcac33969",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "PLANS_NEW_HQ",
+      "object_id": "80503c8e74337369",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "93c49ef8a591dd0f",
+      "predicate": "HIRED_AS",
+      "object_id": "4369fa6ed9874c56",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "93c49ef8a591dd0f",
+      "predicate": "PREVIOUSLY_WORKED_AS",
+      "object_id": "77d454a2ecad7d82",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "DEVELOPING",
+      "object_id": "3d25ad499c076c0a",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "3d25ad499c076c0a",
+      "predicate": "LAUNCHING_IN",
+      "object_id": "2d90c8d6c9a31d80",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "3d25ad499c076c0a",
+      "predicate": "TRAINED_USING",
+      "object_id": "8490bd1b2166f221",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "8490bd1b2166f221",
+      "predicate": "HOSTED_ON",
+      "object_id": "e2150ff3a8991d3a",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "8e4e3960cb5a64a0",
+      "predicate": "INVESTED_IN",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "bed7f621c8277585",
+      "predicate": "INVESTED_IN",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "efdb3a1ebee45c9b",
+      "predicate": "INVESTED_IN",
+      "object_id": "7ab49a98500e58c0",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "efdb3a1ebee45c9b",
+      "predicate": "INVESTED_SERIES_C_AT",
+      "object_id": "e3f7e74471c50531",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "IPO_ON",
+      "object_id": "c930ac991c38215e",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "IPO_DATE",
+      "object_id": "0fb08a6ae155f2f0",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "TICKER",
+      "object_id": "c9f146cc2785a98b",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FACES_COMPETITION_FROM",
+      "object_id": "4d46469752fdd2b4",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FACES_COMPETITION_FROM",
+      "object_id": "693e078df0c61fff",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FACES_RISK_FROM",
+      "object_id": "7a58220d11feda88",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "FACES_RISK_FROM",
+      "object_id": "206d2f13ca989deb",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    },
+    {
+      "subject_id": "7ab49a98500e58c0",
+      "predicate": "MISSION",
+      "object_id": "4dae628a0d5bcb6f",
+      "chunk_ids": [
+        "5e2d7c1a4454:2"
+      ]
+    }
+  ],
+  "chunks": {
+    "5e2d7c1a4454:0": "TechCorp Annual Report 2024\nTechCorp Inc. was founded by Sarah Chen and Michael Rodriguez in 2015\nin San Francisco, California. The company specializes in artificial\nintelligence and cloud computing solutions for enterprise clients.\nIn January 2024, TechCorp acquired DataFlow Systems, a startup based\nin Austin, Texas, for $450 million. DataFlow was founded by James\nPark in 2019 and specializes in real-time data pipeline technology.\nSarah Chen serves as CEO of TechCorp, while Michael Rodriguez is the\nChief Technology Officer. After the acquisition, James Park joined\nTechCorp as Vice President of Data Engineering.\nTechCorp reported annual revenue of $2.8 billion in 2024, a 35%\nincrease from $2.07 billion in 2023. The company employs 12,000\npeople across 15 offices worldwide.\nThe flagship product CloudMind AI is used by over 500 Fortune 1000\ncompanies. CloudMind AI uses a proprietary large language model called\nTechLM-7B trained on enterprise data with customer permission.",
+    "5e2d7c1a4454:1": "Partnerships and Technology Stack\nTechCorp has strategic partnerships with Amazon Web Services (AWS),\nMicrosoft Azure, and Google Cloud Platform.\nIn March 2024, TechCorp partnered with NVIDIA to integrate H100 GPUs\ninto CloudMind AI, resulting in 3x faster inference speeds.\nNVIDIA CEO Jensen Huang praised the partnership at GTC 2024.\nMain competitors include Palantir Technologies, Snowflake, and\nDatabricks. TechCorp differentiates through vertical integration of\nAI models with data pipeline technology after the DataFlow acquisition.\nThe engineering team led by CTO Michael Rodriguez uses Python and\nRust for backend, React for frontend, PostgreSQL and Apache Kafka\nfor data infrastructure, and Kubernetes for orchestration.\nBoard of Directors: Sarah Chen (Chair), Michael Rodriguez,\nLisa Wang (former CEO of Dropbox), Robert Kim (Sequoia Capital),\nand Dr. Amy Foster (Stanford University).\n\nand Kubernetes for orchestration.\nBoard of Directors: Sarah Chen (Chair), Michael Rodriguez,\nLisa Wang (former CEO of Dropbox), Robert Kim (Sequoia Capital),\nand Dr. Amy Foster (Stanford University).",
+    "5e2d7c1a4454:2": "Future Outlook and Strategy\nTechCorp plans European expansion in 2025 with new HQ in London.\nMaria Garcia hired as VP European Operations, previously Regional\nDirector at Salesforce.\nR&D is developing TechLM-70B, launching Q3 2025, trained using\n10,000 NVIDIA H100 GPUs hosted on AWS.\nInvestors: Sequoia Capital (Series A), Andreessen Horowitz (Series B),\nSoftBank Vision Fund (Series C at $500M). IPO on NASDAQ Sep 2023,\nticker TCAI.\nKey risks: competition from OpenAI and Anthropic in enterprise AI,\nEU AI Act regulatory changes, and NVIDIA hardware dependency.\nMission: To democratize enterprise AI and make intelligent data\nprocessing accessible to every organization."
+  }
+}
